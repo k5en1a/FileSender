@@ -4,13 +4,17 @@
 #include <arpa/inet.h>
 #define SIZE 1024
  
-void write_file(int sockfd){
+void write_file(int sockfd, char* folder){
   int n;
   FILE *fp;
+  char path[100];
   char *filename = "recv.txt";
+
+  strcat(path, folder);
+  strcat(path, filename);
   char buffer[SIZE];
  
-  fp = fopen(filename, "w");
+  fp = fopen(path, "w");
   while (1) {
     n = recv(sockfd, buffer, SIZE, 0);
     if (n <= 0){
@@ -25,8 +29,17 @@ void write_file(int sockfd){
  
 int main(){
   char *ip = "127.0.0.1";
-  int port = 8080;
+  int port;
   int e;
+  char folder[50]="";
+
+  printf("Enter port number (e.g. 8080): ");
+  scanf("%d", &port);
+  printf("Server port: %d", port);
+
+  printf("Enter full path for recieved file: ");
+  scanf("%s", folder);
+  printf("Path for recieved file: ", folder);
  
   int sockfd, new_sock;
   struct sockaddr_in server_addr, new_addr;
@@ -59,7 +72,7 @@ int main(){
  
   addr_size = sizeof(new_addr);
   new_sock = accept(sockfd, (struct sockaddr*)&new_addr, &addr_size);
-  write_file(new_sock);
+  write_file(new_sock, folder);
   printf("[+]Data written in the file successfully.\n");
  
   return 0;
