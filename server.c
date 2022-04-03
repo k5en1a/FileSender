@@ -4,17 +4,15 @@
 #include <arpa/inet.h>
 #define SIZE 1024
  
-void write_file(int sockfd, char* folder){
+void write_file(int sockfd, char* targetFile){
   int n;
   FILE *fp;
-  char path[100];
-  char *filename = "recv.txt";
-
-  strcat(path, folder);
-  strcat(path, filename);
+//  char path[100];
+//  char *filename = "recv.txt";
+ 
   char buffer[SIZE];
  
-  fp = fopen(path, "w");
+  fp = fopen(targetFile, "w");
   while (1) {
     n = recv(sockfd, buffer, SIZE, 0);
     if (n <= 0){
@@ -27,20 +25,21 @@ void write_file(int sockfd, char* folder){
   return;
 }
  
-int main(){
+int main(int argc, char* argv[]){
+  if (argc != 3){
+    printf("Usage: server [port] [targetFilePath]\n"
+    "for example\n"
+    "./server 8080 ./recievedFile\n");
+    return 1;
+  }
   char *ip = "127.0.0.1";
-  int port;
+  int port = atoi(argv[1]);
   int e;
-  char folder[50]="";
+  char *tartetFile = argv[2];
 
-  printf("Enter port number (e.g. 8080): ");
-  scanf("%d", &port);
-  printf("Server port: %d", port);
+  printf("[+]Server will start on port %d\n", port);
+  printf("[+]Target file: %s\n", tartetFile);
 
-  printf("Enter full path for recieved file: ");
-  scanf("%s", folder);
-  printf("Path for recieved file: ", folder);
- 
   int sockfd, new_sock;
   struct sockaddr_in server_addr, new_addr;
   socklen_t addr_size;
@@ -72,7 +71,7 @@ int main(){
  
   addr_size = sizeof(new_addr);
   new_sock = accept(sockfd, (struct sockaddr*)&new_addr, &addr_size);
-  write_file(new_sock, folder);
+  write_file(new_sock, tartetFile);
   printf("[+]Data written in the file successfully.\n");
  
   return 0;

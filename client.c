@@ -18,15 +18,22 @@ void send_file(FILE *fp, int sockfd){
   }
 }
  
-int main(){
-  char *ip = "127.0.0.1";
-  int port = 8080;
+int main(int argc, char* argv[]){
+  if (argc != 4) {
+    printf("Usage: client [address] [port] [filePath]\n"
+    "for example\n"
+    "./client 127.0.0.1 8080 ./fileToSend\n");
+    return 1;
+  }
+
+  char *ip = argv[1];
+  int port = atoi(argv[2]);
   int e;
  
   int sockfd;
   struct sockaddr_in server_addr;
   FILE *fp;
-  char *filename = "send.txt";
+  char *filename = argv[3];
  
   sockfd = socket(AF_INET, SOCK_STREAM, 0);
   if(sockfd < 0) {
