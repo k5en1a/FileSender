@@ -22,4 +22,4 @@ client [address] [port] [filePath]
 for example
 ./client 127.0.0.1 8080 ./fileToSend
 ```
-- Transfered file will appear in '[targetFilePath]'
+- Transfered file will appear in `[targetFilePath]`
